@@ -3,7 +3,7 @@
 [![Nextflow](https://img.shields.io/badge/nextflow-%E2%89%A525.04.0-23aa62.svg)](https://www.nextflow.io/)
 [![Run with singularity](https://img.shields.io/badge/run%20with-singularity-1d355c.svg?labelColor=000000)](https://sylabs.io/docs/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
-<!-- DOI badge goes here once the first Zenodo release is minted -->
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.24022536.svg)](https://doi.org/10.5281/zenodo.24022536)
 
 A Nextflow DSL2 pipeline for small-variant and structural-variant (SV) calling from long-read sequencing data (Oxford Nanopore and PacBio HiFi), with a single MultiQC report summarising alignment and variant QC across samples.
 
@@ -138,9 +138,9 @@ Tracked on the [issue tracker](https://github.com/gencorefacility/long-read-vari
 
 If you use this pipeline, please cite it:
 
-> Khalfan M. *long-read-variant-calling*: a Nextflow pipeline for long-read variant calling. NYU Center for Genomics and Systems Biology, Genomics Core. https://github.com/gencorefacility/long-read-variant-calling
+> Khalfan M. *long-read-variant-calling*: a Nextflow pipeline for long-read small-variant and structural-variant calling. Zenodo. https://doi.org/10.5281/zenodo.24022536
 
-<!-- Replace with the Zenodo DOI citation once the first release is minted. GitHub's "Cite this repository" button will use CITATION.cff. -->
+This DOI always resolves to the latest release. To cite a specific version, use the version DOI listed on the [Zenodo record](https://doi.org/10.5281/zenodo.24022536). GitHub's "Cite this repository" button gives the same citation in APA and BibTeX.
 
 Please also cite the tools it runs:
 
@@ -165,7 +165,7 @@ Bug reports and feature requests go in [Issues](https://github.com/gencorefacili
 
 ## Authors and acknowledgments
 
-- **Author:** Mohammed Khalfan ([@mohammedkhalfan](https://github.com/mohammedkhalfan), ORCID [0009-0000-8561-6530](https://orcid.org/0009-0000-8561-6530)), NYU Center for Genomics and Systems Biology (CGSB) Genomics Core
+- **Author:** Mohammed Khalfan ([@mohammedkhalfan](https://github.com/mohammedkhalfan)), NYU Center for Genomics and Systems Biology (CGSB) Genomics Core
 - **Maintainer:** Eric Borenstein ([@genericdata](https://github.com/genericdata))
 
 Thanks to the Nextflow and nf-core communities, whose conventions this pipeline follows.

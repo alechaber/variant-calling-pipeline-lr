@@ -3,6 +3,7 @@ message: "If you use this pipeline, please cite it using the metadata below, and
 type: software
 title: "long-read-variant-calling: a Nextflow pipeline for long-read small-variant and structural-variant calling"
 version: 0.1.0
+doi: 10.5281/zenodo.24022536
 license: MIT
 repository-code: "https://github.com/gencorefacility/long-read-variant-calling"
 authors:
