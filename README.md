@@ -166,7 +166,7 @@ Bug reports and feature requests go in [Issues](https://github.com/gencorefacili
 ## Authors and acknowledgments
 
 - **Author:** Mohammed Khalfan ([@mohammedkhalfan](https://github.com/mohammedkhalfan)), NYU Center for Genomics and Systems Biology (CGSB) Genomics Core
-- **Maintainer:** Eric Borenstein ([@genericdata](https://github.com/genericdata))
+- **Maintainer:** Eric Borenstein ([@genericdata](https://github.com/genericdata)), NYU High Performance Computing and Department of Biology
 
 Thanks to the Nextflow and nf-core communities, whose conventions this pipeline follows.
 
