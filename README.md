@@ -165,7 +165,8 @@ Bug reports and feature requests go in [Issues](https://github.com/gencorefacili
 
 ## Authors and acknowledgments
 
-Developed and maintained by **Mohammed Khalfan** ([@mohammedkhalfan](https://github.com/mohammedkhalfan), ORCID [0009-0000-8561-6530](https://orcid.org/0009-0000-8561-6530)), NYU Center for Genomics and Systems Biology (CGSB) Genomics Core.
+- **Author:** Mohammed Khalfan ([@mohammedkhalfan](https://github.com/mohammedkhalfan), ORCID [0009-0000-8561-6530](https://orcid.org/0009-0000-8561-6530)), NYU Center for Genomics and Systems Biology (CGSB) Genomics Core
+- **Maintainer:** Eric Borenstein ([@genericdata](https://github.com/genericdata))
 
 Thanks to the Nextflow and nf-core communities, whose conventions this pipeline follows.
 
