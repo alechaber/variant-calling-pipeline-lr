@@ -1,0 +1,20 @@
+cff-version: 1.2.0
+message: "If you use this pipeline, please cite it using the metadata below, and also cite the tools it runs (see README)."
+type: software
+title: "long-read-variant-calling: a Nextflow pipeline for long-read small-variant and structural-variant calling"
+version: 0.1.0
+license: MIT
+repository-code: "https://github.com/gencorefacility/long-read-variant-calling"
+authors:
+  - family-names: Khalfan
+    given-names: Mohammed
+    orcid: "https://orcid.org/0009-0000-8561-6530"
+    affiliation: "Center for Genomics and Systems Biology, New York University"
+keywords:
+  - nextflow
+  - long-read sequencing
+  - Oxford Nanopore
+  - PacBio
+  - variant calling
+  - structural variants
+  - Saccharomyces cerevisiae
