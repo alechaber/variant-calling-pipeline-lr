@@ -40,7 +40,7 @@ process SNIFFLES2 {
 
     cat <<-END_VERSIONS > sniffles2_versions.yml
     "${task.process}":
-        sniffles2: \$(sniffles --version 2>&1 | sed 's/Sniffles //')
+        sniffles2: \$(sniffles --version 2>&1 | sed 's/^.*Version //')
     END_VERSIONS
     """
 }

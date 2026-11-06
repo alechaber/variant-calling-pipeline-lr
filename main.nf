@@ -40,7 +40,7 @@ workflow {
     // 1. Create input channel with metadata
     // Meta map contains sample information that travels with the data
     Channel
-        .fromPath(params.input)
+        .fromPath(params.input, checkIfExists: true)
         .map { fastq ->
             def meta = [
                 id: fastq.baseName,  // Sample ID from filename
@@ -50,18 +50,21 @@ workflow {
         .set { ch_input }
     
     // 2. Prepare reference files
-    ch_reference = Channel.fromPath(params.reference)
-    ch_reference_fai = Channel.fromPath(params.reference + '.fai')
-    
+    // Single files shared by every sample MUST be value channels. A queue
+    // channel (Channel.fromPath) holds one item, is consumed by the first
+    // sample, and every other sample is silently dropped.
+    ch_reference     = Channel.value(file(params.reference, checkIfExists: true))
+    ch_reference_fai = Channel.value(file(params.reference + '.fai', checkIfExists: true))
+
     // 3. Handle optional inputs
     // Tandem repeats for Sniffles2 (OPTIONAL)
-    ch_tandem_repeats = params.tandem_repeats 
-        ? Channel.fromPath(params.tandem_repeats)
-        : Channel.value([])  // Empty channel if not provided
+    ch_tandem_repeats = params.tandem_repeats
+        ? Channel.value(file(params.tandem_repeats, checkIfExists: true))
+        : Channel.value([])  // Empty value if not provided
 
-    // Clair3 model (required if running Clair3)
+    // Clair3 model directory (required if running Clair3)
     ch_clair3_model = params.run_clair3
-        ? Channel.fromPath(params.clair3_model)
+        ? Channel.value(file(params.clair3_model, checkIfExists: true))
         : Channel.value([])
     
     // 4. Run alignment with Minimap2
@@ -122,43 +125,57 @@ workflow {
     // 7. Collect all files for MultiQC
     ch_multiqc_files = Channel.empty()
         .mix(MINIMAP2.out.stats.map { meta, stats -> stats }.collect().ifEmpty([]))
-        .mix(MINIMAP2.out.versions)
 
-        // Add PEPPER stats and versions if run
+        // Add PEPPER stats if run
         .mix(ch_pepper_stats.stats.map { meta, stats -> stats }.collect().ifEmpty([]))
         .mix(ch_pepper_rtg.rtg_stats.map { meta, stats -> stats }.collect().ifEmpty([]))
-        .mix(ch_pepper_stats.versions)
-        .mix(ch_pepper_rtg.versions)
-        .mix(PEPPER.out.versions)
 
-        // Add CUTESV stats and versions if run
+        // Add CUTESV stats if run
         //.mix(ch_cutesv_stats.stats.map { meta, stats -> stats }.collect().ifEmpty([]))
         .mix(ch_cutesv_rtg.rtg_stats.map { meta, stats -> stats }.collect().ifEmpty([]))
         .mix(ch_cutesv_length_dist.stats.map { meta, stats -> stats }.collect().ifEmpty([]))
         .mix(ch_cutesv_length_dist.multiqc.ifEmpty([]))
         .mix(ch_cutesv_samplots.multiqc.ifEmpty([]))
         //.mix(ch_cutesv_stats.versions)
-        .mix(ch_cutesv_rtg.versions)
-        .mix(CUTESV.out.versions)
 
-        // Add CLAIR3 stats and versions if run
+        // Add CLAIR3 stats if run
         .mix(ch_clair3_stats.stats.map { meta, stats -> stats }.collect().ifEmpty([]))
         .mix(ch_clair3_rtg.rtg_stats.map { meta, stats -> stats }.collect().ifEmpty([]))
-        .mix(ch_clair3_stats.versions)
-        .mix(ch_clair3_rtg.versions)
-        .mix(CLAIR3.out.versions)
 
-        // Add SNIFFLES2 stats and versions if run
+        // Add SNIFFLES2 stats if run
         //.mix(ch_sniffles2_stats.stats.map { meta, stats -> stats }.collect().ifEmpty([]))
         .mix(ch_sniffles2_rtg.rtg_stats.map { meta, stats -> stats }.collect().ifEmpty([]))
         .mix(ch_sniffles2_length_dist.stats.map { meta, stats -> stats }.collect().ifEmpty([]))
         .mix(ch_sniffles2_length_dist.multiqc.ifEmpty([]))
         .mix(ch_sniffles2_samplots.multiqc.ifEmpty([]))
         //.mix(ch_sniffles2_stats.versions)
+
+    // 8. Software versions
+    // Each process writes one versions file per sample, all with the same
+    // name, which makes MultiQC fail with a file name collision as soon as
+    // there is more than one sample. De-duplicate by content and collate into
+    // a single *_mqc_versions.yml, the file pattern MultiQC reads to build its
+    // 'Software Versions' section.
+    ch_versions = Channel.empty()
+        .mix(MINIMAP2.out.versions)
+        .mix(ch_pepper_stats.versions)
+        .mix(ch_pepper_rtg.versions)
+        .mix(PEPPER.out.versions)
+        .mix(ch_cutesv_rtg.versions)
+        .mix(CUTESV.out.versions)
+        .mix(ch_clair3_stats.versions)
+        .mix(ch_clair3_rtg.versions)
+        .mix(CLAIR3.out.versions)
         .mix(ch_sniffles2_rtg.versions)
         .mix(SNIFFLES2.out.versions)
-    
-    // 7. Run MultiQC
+
+    ch_versions_collated = ch_versions
+        .unique { it.text }
+        .collectFile(name: 'software_versions_mqc_versions.yml', newLine: true, sort: true)
+
+    ch_multiqc_files = ch_multiqc_files.mix(ch_versions_collated)
+
+    // 9. Run MultiQC
     MULTIQC(
         ch_multiqc_files.collect(),
         Channel.value([]),  // multiqc_config (optional)

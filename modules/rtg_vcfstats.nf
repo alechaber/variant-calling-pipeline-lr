@@ -17,7 +17,7 @@ process RTG_VCFSTATS {
 
     cat <<-END_VERSIONS > rtg_vcfstats_${caller}_versions.yml
     "${task.process}":
-        rtg-tools: \$(rtg --version | head -n1 | sed 's/^.*rtg-tools //; s/ .*\$//')
+        rtg-tools: \$(rtg version | head -n1 | sed 's/^.*RTG Tools //; s/ .*\$//')
     END_VERSIONS
     """
 }
