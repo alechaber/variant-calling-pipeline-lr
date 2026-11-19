@@ -24,9 +24,10 @@ include { SAMPLOT as SAMPLOT_SNIFFLES } from './modules/samplot'
 def validateParams() {
     def errors = []
     
-    if (!params.input) errors << "--input is required (path to fastq files)"
-    if (!params.outdir) errors << "--outdir is required (output directory)"
-    if (!params.reference) errors << "--reference is required"
+    // Placeholder values starting with ENTER_ (see nextflow.config) count as not set
+    if (!params.input || params.input.startsWith('ENTER_')) errors << "--input is required (path to fastq files)"
+    if (!params.outdir || params.outdir.startsWith('ENTER_')) errors << "--outdir is required (output directory)"
+    if (!params.reference || params.reference.startsWith('ENTER_')) errors << "--reference is required"
     if (!params.minimap2_preset) errors << "--minimap2_preset is required (e.g., 'lr:hq')"
     if (params.run_clair3 && !params.clair3_model) errors << "--clair3_model required when --run_clair3=true"
     if (params.run_clair3 && !params.clair3_platform) errors << "--clair3_platform required when --run_clair3=true (e.g., 'ont', 'hifi')"
@@ -193,7 +194,8 @@ workflow.onComplete {
     Results:   ${params.outdir}
     """
     
-    if (params.email) {
+    // Only send when --email looks like an address (null, empty or the text "null" send nothing)
+    if (params.email && params.email ==~ /[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}/) {
         def status = workflow.success ? "SUCCESS" : "FAILED"
         def subject = "Long read pipeline status: ${status}"
         def body = """
